@@ -39,7 +39,7 @@ I rebuilt the behavior of Zalando's dropdowns in a toy example. It makes heavy u
 
 In one instance I departed from Zalando's example: Instead of bolding the dropdown button I opted to change its label to reflect the selection.
 
-You can see the app in action (including its code and reactive behavior) on [ShinyApps.io](https://psim.shinyapps.io/dropdowns/). The code is on Github under the MIT license, so please feel free to use it in any way.
+You can see the app in action (including its code and reactive behavior) on [ShinyApps.io](https://psim.shinyapps.io/dropdowns/). The code is on [Github](https://github.com/psimm/smart_dropdowns) under the MIT license, so please feel free to use it in any way.
 
 ### Tracking displayed and applied settings
 When the dropdown has a save button, there is the need two states of the inputs. One is the displayed state, the other is the applied state. The displayed state is automatically tracked by the input element itself. We need to track the applied state ourselves. In the example app, I went with a reactiveVal to hold it. The reactive that computes the output filters based on that reactiveVal, not directly on the input.
