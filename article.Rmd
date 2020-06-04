@@ -1,0 +1,50 @@
+---
+title: "Smart Dropdowns in Shiny"
+author: "Paul Simmering"
+date: "4 June 2020"
+output: 
+  prettydoc::html_pretty:
+    theme: hpstr
+    highlight: github
+    css: fonts.css
+    
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+A common problem in Shiny apps is that they appear slow because they are running queries or computations too often.
+
+This happens when a query or computation runs in a reactive object that depends directly on an input. Whenever the user changes the input, the reactive has to be recomputed. If the user wants to modify multiple inputs, they need to wait multiple times, which is frustrating. An example of this can be seen in the IPC class selector dropdown of the [Global Patent Explorer](https://psim.shinyapps.io/patent/) app (where I wrote the Shiny code).
+
+## Inspiration from Zalando
+
+The fashion ecommerce store Zalando has solved this problem elegantly by adding a save button:
+
+![](https://media.giphy.com/media/ehxwUjdKNhVNF19Tpz/giphy.gif)
+
+Thus the database is only queried when the user clicks save, which saves time.
+
+There are several small behaviors that make Zalando's dropdown work smoothly:
+
+- Saving is also triggered when the user closes the dropdown. This prevents frustration when a user forgets to click save.
+- The save button inverts its color and becomes more prominent when there is something to save. This lets it stay in the background while it's not of use, and reminds the user of its existence when it's useful.
+- A reset button saves users time when they want to adjust the setting again. That reset button is only shown when there is actually something to reset, which avoids offering a useless action.
+- The dropdown button uses bold font and a darker shade when a setting is selected that is not the default. This reminds the user of their filters.
+
+## Example app walkthrough
+
+I rebuilt the behavior of Zalando's dropdowns in a toy example. It makes heavy use of the amazing [shinyWidgets](https://dreamrs.github.io/shinyWidgets/index.html) Package by the [dreamRs](https://www.dreamrs.fr/).
+
+In one instance I departed from Zalando's example: Instead of bolding the dropdown button I opted to change its label to reflect the selection.
+
+You can see the app in action (including its code and reactive behavior) on [ShinyApps.io](https://psim.shinyapps.io/dropdowns/). The code is on Github under the MIT license, so please feel free to use it in any way.
+
+### Tracking displayed and applied settings
+When the dropdown has a save button, there is the need two states of the inputs. One is the displayed state, the other is the applied state. The displayed state is automatically tracked by the input element itself. We need to track the applied state ourselves. In the example app, I went with a reactiveVal to hold it. The reactive that computes the output filters based on that reactiveVal, not directly on the input.
+
+### Working with dropdownButton
+The function from shinyWidgets creates a dropdown menu which can be filled with arbitrary UI elements. The dropdown itself is implemented as an actionButton, so it can be changed with updateActionButton(). In addition, it adds a new input available at input$inputId_state, which is TRUE when the dropdown is open and FALSE when it isn't. I used that feature to save the displayed settings to the applied settings on close, by using an observeEvent() on it.
+
+That's it! A simple template for dropdown inputs with intermediary save button in Shiny.

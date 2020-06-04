@@ -1,0 +1,1 @@
+An example app that shows the use of dropdowns with an intermediary save button. This behavior is useful when the input is used for a long-running database query or computation. Please see the accompanying [blog post](https://rpubs.com/paul_simmering/dropdowns) for more information.
